@@ -99,4 +99,4 @@ Have fun developing your solution and good luck.
 
 ## Please don't forget to push all your code to github
 
-# This is the competition link: `https://www.kaggle.com/t/5af4059e849e433597c960c3050bd4fa`
+# This is the competition link: [Link to kaggle competition](https://www.kaggle.com/t/5af4059e849e433597c960c3050bd4fa)
