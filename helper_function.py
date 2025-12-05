@@ -1,4 +1,4 @@
-""" 
+"""
 """
 This is a helper function that can be used to validate that the actions you want to take
 are physically possible for the battery.
