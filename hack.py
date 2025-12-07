@@ -45,7 +45,7 @@ def optimize_day_dp(
                 if s_next < 0 or s_next > cap_steps:
                     continue
                 a = a_int * step_unit
-                # profit instant = -a * p (cumperi => a>0 => cost; vinzi => a<0 => castig)
+                # profit = -a * p (cumperi => a>0 => cost mic; vinzi => a<0 => castig)
                 reward = -a * p + dp[t + 1, s_next]
                 if reward > best:
                     best = reward
@@ -73,13 +73,13 @@ def optimize_day_dp(
 
 
 def main():
-    print("Step 1/5: Incarc Dataset.csv si sample_submission.csv...")
+    print("Pas 1/5: Citim setul de date...")
     sys.stdout.flush()
 
     df = pd.read_csv("Dataset.csv")
-    sample = pd.read_csv("sample_submission.csv")
+    sample = pd.read_csv("sample_submission.csv") 
 
-    print("Step 2/5: Parsez timpul si generez feature-uri de timp...")
+    print("Pas 2/5: Generam label urile pentru regresie...")
     sys.stdout.flush()
 
     df["start"] = parse_start(df["Time interval (CET/CEST)"])
@@ -98,45 +98,44 @@ def main():
     df["date"] = df["start"].dt.date
     sample["date"] = sample["start"].dt.date
 
-    print("Step 3/5: Antrenez RandomForestRegressor pentru pret...")
+    print("Pas 3/5: Antrenam RandomForestRegressor pentru pret...")
     sys.stdout.flush()
 
     features = [
-        "hour",
-        "quarter",
-        "dayofweek",
-        "month",
-        "dayofyear",
-        "is_weekend",
-        "intraday_idx",
+        "hour", #ora
+        "quarter", #in ce sfert de ora ne aflam:1 2 3 sau 4
+        "dayofweek", #0=luni ... 6=duminica
+        "month", #luna
+        "dayofyear", #ziua din an
+        "is_weekend", #daca e weekend sau nu, 0 sau 1
+        "intraday_idx", #indexul intervalului orar din zi: 0 - 95 (96 de intervale de 15 minute intr-o zi)
     ]
 
     X_train = df[features]
-    y_train = df["Price"]
+    y_train = df["Price"] #pretul de antrenare
 
     reg_price = RandomForestRegressor(
-        n_estimators=1000,
+        n_estimators=1010, #numarul de arbori din padure
         max_depth=None,
         min_samples_leaf=10,
-        max_features="log2",
+        max_features='log2',
         random_state=0,
         n_jobs=-1,
     )
     reg_price.fit(X_train, y_train)
 
-    print("Step 4/5: Prezic preturile pentru cele 8 zile (sample)...")
+    print("Pas 4/5: Prezicem preturi pe 8 zile...")
     sys.stdout.flush()
 
     X_sub = sample[features]
     sample["pred_price"] = reg_price.predict(X_sub)
 
-    print("Step 5/5: Calculez actiunile optime pe fiecare zi (dynamic programming)...")
+    print("Pas 5/5: Calculez actiunile optime pe fiecare zi (algoritmul dynamic programming)...")
     sys.stdout.flush()
 
     actions = np.zeros(len(sample), dtype=float)
 
     unique_dates = sorted(sample["date"].unique())
-    print(f"  Avem {len(unique_dates)} zile in sample.")
     for d in unique_dates:
         idx = sample.index[sample["date"] == d]
         idx_sorted = idx.sort_values()
@@ -155,14 +154,14 @@ def main():
     # Rotunjim explicit la o zecimala (multipli de 0.1)
     actions = np.round(actions, 1)
 
-    print("  Distributie actiuni pe cele 8 zile:")
+    print("Distributie actiuni pe cele 8 zile:")
     vals, counts = np.unique(actions, return_counts=True)
     for v, c in zip(vals, counts):
         print(f"    {v:+.1f}: {c} ({c/len(actions)*100:.2f}%)")
     sys.stdout.flush()
 
     # Validam actiunile cu helper_function
-    print("  -> Validez actiunile cu validate_battery_actions...")
+    print("Validez actiunile cu validate_battery_actions...")
     sys.stdout.flush()
 
     is_valid, warnings = validate_battery_actions(
@@ -174,7 +173,7 @@ def main():
         return_trace=False,
     )
 
-    print(f"  Rezultat validare: is_valid={is_valid}, nr_warnings={len(warnings)}")
+    print(f"Rezultat validare: is_valid={is_valid}, nr_warnings={len(warnings)}") #afisam rezultatul validarii
     if len(warnings) > 0:
         print("  Primele cateva avertismente:")
         for w in warnings[:10]:
