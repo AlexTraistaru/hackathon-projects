@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="./style/nav.css">
+    <link rel="stylesheet" href="./style/footer.css">
+    <link rel="stylesheet" href="./style/home.css">
+    <link rel="stylesheet" href="./style/carousel.css">
+    <link rel="stylesheet" href="./style/contact.css">
+
+
+    <title>ZebraHack2.0</title>
+</head>
+<body>
+    <header>
+
+
+        <nav>
+        <ul>
+        <li class="left"><a href="./index.html" class="left1" alt="#logo"><img src="./img/Logo.png" class="responsive_img"></a></li>
+        
+        <li class="right_button"><button id="modeToggle"><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-lightbulb" viewBox="0 0 16 16">
+            <path d="M2 6a6 6 0 1 1 10.174 4.31c-.203.196-.359.4-.453.619l-.762 1.769A.5.5 0 0 1 10.5 13a.5.5 0 0 1 0 1 .5.5 0 0 1 0 1l-.224.447a1 1 0 0 1-.894.553H6.618a1 1 0 0 1-.894-.553L5.5 15a.5.5 0 0 1 0-1 .5.5 0 0 1 0-1 .5.5 0 0 1-.46-.302l-.761-1.77a2 2 0 0 0-.453-.618A5.98 5.98 0 0 1 2 6m6-5a5 5 0 0 0-3.479 8.592c.263.254.514.564.676.941L5.83 12h4.342l.632-1.467c.162-.377.413-.687.676-.941A5 5 0 0 0 8 1"/>
+          </svg></button></li>
+        <li class="right"><a href="./contact.html" class="right1">Contact</a></li>
+        
+        <li class="right"><a href="./do-it.html" class="right1">DO-IT</a></li>
+        <li class="right"><a href="./inscriere.html" class="right1">Inscriere</a></li>
+        <li class="right"><a href="./index.html" class="right1">Acasa</a></li>
+        
+        </ul>   
+        
+        </nav>
+
+
+    <!-- telefon -->
+    <div class="topnav">
+        <a href="./index.html" class="left1" alt="#logo"><img src="./img/Logo.png" class="responsive_img"></a>
+       
+        <div id="myLinks">
+            <a href="./contact.html" class="right1">Contact</a>
+   
+            <a href="./do-it.html" class="right1">DO-IT</a>
+            <a href="./inscriere.html" class="right1">Inscriere</a>
+            <a href="./index.html" class="right1">Acasa</a>
+            <a class="icon1"><button id="modeToggle1"><img src="./icons/light.svg"></button></a>
+            
+        </div>
+        <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+        <img src="./icons/list.svg" class="responsive_img"></a>
+    </div>
+    <h1 style="text-align: center; font-family: Arial, Helvetica, sans-serif;">Launch the Students</h1>
+    </header>
+    <section>
+        <main>
+            <form id="contact_form">
+                <label for="name">Nume:</label>
+                <input type="text" id="name" placeholder="Introdu nume" required>
+    
+                <label for="institution">Institutie/organizatie:</label>
+                <input type="text" id="institution" placeholder="Introdu instituția/organizația" required>
+    
+                <label for="support">Tipul de sprijin:</label>
+                <select id="support" required>
+                    <option value="workshops">Workshop-uri</option>
+                    <option value="events">Organizarea de evenimente</option>
+                </select>
+    
+                <button type="submit">Trimite</button>
+    
+                <div id="confirmation_msj" style="display: none;">
+                    Multumim, formularul a fost trimis
+                </div>
+            </form>
+
+        </main>
+        
+    <footer>
+        <p>Află mai multe despre noi</p>
+        <ul>
+            <li><a href="https://web.facebook.com/launchcommunity?_rdc=1&_rdr" target="_blank"><img src="./icons/facebook.svg"></a></li>
+            <li><a href="https://www.instagram.com/launch.romania/" target="_blank"><img src="./icons/instagram.svg"></a></li>
+            <li><a href="https://www.linkedin.com/company/launch-romania/" target="_blank"><img src="./icons/linkedin.svg"></a></li>
+            <li><a href="https://www.youtube.com/channel/UCw8mEn2y6TJSt3ciJl4Gt9g" target="_blank"><img src="./icons/youtube.svg"></a></li>
+        </ul>
+        <p style="font-size:75%;">&copy; launch 2024. Toate drepturile rezervate</p>
+    </footer>
+    <script src="./script/nav_transfer.js"></script>
+    <script src="./script/script.js"></script>
+    <script src="./script/carousel.js"></script>
+</body>
+</html>
