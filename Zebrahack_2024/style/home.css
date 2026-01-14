@@ -1,0 +1,15 @@
+body{
+    font-family:Arial, Helvetica, sans-serif;
+    font-size: calc(1.1vh + 1.1vw);
+    transition: background-color 0.5s, color 0.5s;
+}
+
+body.light-mode{
+    background-color:#e9ffff;
+    color: black;
+}
+
+body.dark-mode{
+    background-color:#1a1933;
+    color: white;
+}

@@ -1,0 +1,78 @@
+/* Stil general pentru formular */
+#contact_form {
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
+    font-family: Arial, sans-serif;
+}
+
+/* Stil pentru etichete */
+#contact_form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Stil pentru câmpurile de introducere */
+#contact_form input[type="text"],
+#contact_form select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+#contact_form input[type="text"]:focus,
+#contact_form select:focus {
+    border-color: #007BFF;
+    outline: none;
+}
+
+/* Stil pentru buton */
+#contact_form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#contact_form button:hover {
+    background-color: #0056b3;
+}
+
+/* Stil pentru mesajul de confirmare */
+#confirmation_msj {
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    border-radius: 4px;
+    font-size: 14px;
+    display: none; /* implicit ascuns */
+}
+
+/* Responsivitate pentru ecrane mici */
+@media (max-width: 600px) {
+    #contact_form {
+        padding: 15px;
+    }
+
+    #contact_form button {
+        font-size: 14px;
+    }
+}
