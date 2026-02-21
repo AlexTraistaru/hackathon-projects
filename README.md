@@ -15,7 +15,7 @@ Each folder contains the code and assets for a specific hackathon submission. Th
 - **My Contribution:** JavaScript development: Implemented JavaScript functionality for the project (frontend logic / interactive behavior).
 - **Skills highlighted:** JavaScript, teamwork, rapid prototyping under time constraints
 
-### 2) SIE 2025
+### 2) SIE (Serviciul de informatii externe) 2025
 - **Folder:** `SIE-2025`
 - **My Contribution:** Database integration, task creation/editing features, and part of the design: I worked on connecting the application to the database, implementing task creation and task editing functionality, and contributing to UI/design improvements.
 - **Skills highlighted:** Database integration, CRUD logic, backend/frontend collaboration, UI improvements
