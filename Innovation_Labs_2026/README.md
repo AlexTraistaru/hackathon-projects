@@ -198,7 +198,3 @@ This starts **PostgreSQL**, the **Streamlit app** on port **8501** and the **Fas
 - **Forecast performance** depends on weather forecasts, measurements and the availability of external services.
 - **Security and payments** are prototype-oriented. Deploying a real product would require hardened authentication, secrets management, data protection and payment operations.
 - **Scheduled jobs:** scripts in `jobs/` are included, but **GitHub Actions workflows are not configured in this portfolio subdirectory**. No automatic recurring tasks run just because these files are present.
-
-## Development context
-
-This is a **collaboratively developed hackathon project**. The portfolio entry describes the shared application and its technical components; it does not assign individual ownership of specific modules to any teammate. The project is preserved here as a demonstration of hands-on product development, technical integration and testing.
