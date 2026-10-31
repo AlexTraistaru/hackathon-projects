@@ -25,6 +25,13 @@ Each folder contains the code and assets for a specific hackathon submission. Th
 - **My Contribution:** Machine learning (Random Forest and Random Classifier): I implemented and tested machine learning models, including Random Forest and a random classifier baseline, for the hackathon solution.
 - **Skills highlighted:** Python, machine learning, model experimentation, fast iteration
 
+### 4) Innovation Labs 2026 — Prosumer Bill & Solar Assistant
+
+- **Folder:** `Innovation_Labs_2026`
+- **Project:** Web and mobile application for Romanian household prosumers, featuring electricity bill analysis, inverter data integration, solar forecasting, system optimization, and regulation alerts.
+- **My Contribution:** Prototype testing, implementation of some functionalities and project documentation. 
+- **Technologies:** Python, Streamlit, FastAPI, React Native, TypeScript, SQLite, scikit-learn.
+
 ## Technologies Used (across projects)
 
 Depending on the hackathon project, this repository includes work with:
