@@ -1,0 +1,187 @@
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Flex, Heading, ProgressCircle, Text, Grid } from "@adobe/react-spectrum";
+import ForceGraph2D from "react-force-graph-2d";
+import { COMMUNITY_COLORS, pct, useApi , C } from "../api";
+import { go } from "../App";
+import { AiTag, Card, td, th, Th, Info, withTerms } from "../components/ui";
+
+function TopVoices({ comms, sel, setSel }: { comms: any[]; sel: number | null; setSel: (c: number | null) => void }) {
+  const v = useApi<any>("voices", C("/voices"));
+  if (!v.data) return null;
+  if (!v.data.available)
+    return (
+      <Card title="Top voices" info="Influencer lists need a public follow graph. Ad platforms report segments only, never who is in them.">
+        <div style={{ fontSize: 14, color: "var(--muted)", lineHeight: 1.6 }}>
+          Not available for ad-platform segments. In production, creators for these segments come from the platforms' creator marketplaces (TikTok, Instagram) or paid tools such as Modash or HypeAuditor.
+        </div>
+      </Card>
+    );
+  const cur = sel ?? comms[0]?.community_id;
+  const rows: any[] = v.data.communities[String(cur)] ?? [];
+  const synthetic = rows.some((r) => r.synthetic);
+  return (
+    <Card title="Top voices" info={<>The accounts each community follows and replies to most: who it actually listens to.<br /><br />Only public profiles are named; everyone else stays anonymous.{synthetic && <><br /><br />These are made-up demo profiles (.example handles). Run the Bluesky snapshot for real ones.</>}</>}
+      right={<a href={C("/voices.csv")} download style={{ fontSize: 13, color: "var(--blue)", textDecoration: "none" }}>Download CSV (all communities)</a>}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 12 }}>
+        {comms.map((c) => (
+          <button key={c.community_id} onClick={() => setSel(c.community_id)}
+            style={{ cursor: "pointer", border: "1px solid var(--line)", borderRadius: 16, padding: "4px 12px", fontSize: 13, color: "#ddd",
+              background: c.community_id === cur ? "rgba(255,255,255,.1)" : "transparent", display: "inline-flex", alignItems: "center", gap: 6 }}>
+            <span style={{ width: 8, height: 8, borderRadius: 4, background: COMMUNITY_COLORS[c.community_id % COMMUNITY_COLORS.length] }} />
+            {c.name}
+          </button>
+        ))}
+      </div>
+      {rows.length === 0 ? <div style={{ color: "var(--muted)", fontSize: 14 }}>No public profiles in this community yet.</div> : (
+        <table className="dtable">
+          <thead>
+            <tr><Th left>#</Th><Th left>Who</Th><Th left>Bio</Th><Th>Followers</Th><Th>Followed by</Th><Th>Replies + reposts</Th><Th>Profile</Th></tr>
+          </thead>
+          <tbody>
+            {rows.map((r, i) => (
+              <tr key={r.handle}>
+                <td className="l" style={{ color: "var(--muted)" }}>{i + 1}</td>
+                <td className="l">
+                  <div style={{ fontWeight: 650 }}>{r.display_name}</div>
+                  <div style={{ fontSize: 12, color: "var(--muted)" }}>@{r.handle}</div>
+                </td>
+                <td className="l" style={{ fontSize: 13, color: "#c8c8d0", maxWidth: 360 }}>{r.bio || "–"}</td>
+                <td>{r.followers.toLocaleString()}</td>
+                <td>{(r.followed_by_share * 100).toFixed(0)}% <span style={{ fontSize: 12, color: "var(--muted)" }}>of community</span></td>
+                <td>{r.engagement}</td>
+                <td>{r.url ? <a href={r.url} target="_blank" rel="noreferrer" style={{ color: "var(--blue)" }}>Open ↗</a> : <span style={{ fontSize: 12, color: "var(--muted)" }}>demo</span>}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </Card>
+  );
+}
+
+export default function Communities() {
+  const q = useApi("communities", C("/communities"));
+  const hm = useApi<any[]>("heatmap", C("/heatmap"));
+  const [sel, setSel] = useState<number | null>(null);
+  const box = useRef<HTMLDivElement>(null);
+  const [w, setW] = useState(700);
+  useEffect(() => {
+    const f = () => setW(box.current?.clientWidth ?? 700);
+    f();
+    window.addEventListener("resize", f);
+    return () => window.removeEventListener("resize", f);
+  }, [q.data]);
+  const graph = useMemo(() => (q.data?.graph ? { nodes: q.data.graph.nodes.map((n: any) => ({ ...n })), links: q.data.graph.links.map((l: any) => ({ ...l })) } : null), [q.data]);
+  if (!q.data) return <ProgressCircle isIndeterminate aria-label="loading" />;
+  const segmentsOnly = q.data.audience_type === "segments";
+  const comms = q.data.communities as any[];
+  const meta = q.data.meta;
+  const ads = Array.from(new Set((hm.data ?? []).map((r) => r.ad_id))).sort();
+
+  return (
+    <Flex direction="column" gap="size-250">
+      <Flex alignItems="center" gap="size-150" justifyContent="center" wrap>
+        <Heading level={2} margin={0}>{segmentsOnly ? "Audience segments" : "Audience communities"}</Heading>
+        <span style={{ fontSize: 14, color: "var(--muted)", display: "inline-flex", alignItems: "center" }}>
+          {segmentsOnly ? `${comms.length} segments` : `${meta.accounts?.toLocaleString()} accounts · ${comms.length} communities`}
+          <Info>
+            {segmentsOnly
+              ? <>Ad platforms report results per targeting segment, never per person. Each segment is modeled with {meta.accounts?.toLocaleString()} synthetic accounts.</>
+              : <>{meta.source === "bluesky" ? "Real Bluesky accounts" : "Synthetic stand-in until you run the Bluesky snapshot"}{q.data.audience_source ? ` around ${q.data.audience_source.handle}` : ""}. Communities found with the {meta.community_method} algorithm on who-follows-whom.</>}
+          </Info>
+        </span>
+      </Flex>
+      {graph && <Grid columns={["3fr", "2fr"]} gap="size-200">
+        <Card title="Follow graph" info={`Sample of ${graph.nodes.length} accounts, one color per community. Click a node or a community to focus it.`} padding="size-150">
+          <div ref={box} style={{ height: 460, overflow: "hidden", borderRadius: 6 }}>
+            <ForceGraph2D
+              graphData={graph}
+              width={w}
+              height={460}
+              backgroundColor="rgba(0,0,0,0)"
+              nodeRelSize={2.2}
+              nodeVal={(n: any) => 0.6 + n.a}
+              nodeColor={(n: any) => (sel == null || n.c === sel ? COMMUNITY_COLORS[n.c % COMMUNITY_COLORS.length] : "rgba(120,120,120,0.25)")}
+              linkColor={() => "rgba(255,255,255,0.05)"}
+              linkWidth={0.4}
+              cooldownTicks={120}
+              enableNodeDrag={false}
+              onNodeClick={(n: any) => setSel(sel === n.c ? null : n.c)}
+            />
+          </div>
+        </Card>
+        <Card title="Communities" info={meta.nmi_vs_seed != null ? <>Match with the starter packs we seeded from: {withTerms("NMI")} {meta.nmi_vs_seed.toFixed(2)}</> : undefined}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+            {comms.map((c) => (
+              <div key={c.community_id} onClick={() => setSel(sel === c.community_id ? null : c.community_id)} style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: 8, padding: "6px 8px", borderRadius: 6, background: sel === c.community_id ? "rgba(255,255,255,.08)" : undefined }}>
+                <span style={{ width: 12, height: 12, borderRadius: 6, background: COMMUNITY_COLORS[c.community_id % COMMUNITY_COLORS.length] }} />
+                <b style={{ flex: 1 }}>{c.name}</b>
+                <span style={{ opacity: 0.6, fontSize: 13 }}>{c.size} accounts</span>
+              </div>
+            ))}
+          </div>
+        </Card>
+      </Grid>}
+      <TopVoices comms={comms} sel={sel} setSel={setSel} />
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 16 }}>
+        {comms.filter((c) => sel == null || c.community_id === sel).map((c) => (
+          <Card key={c.community_id} title={<span><span style={{ display: "inline-block", width: 10, height: 10, borderRadius: 5, marginRight: 8, background: COMMUNITY_COLORS[c.community_id % COMMUNITY_COLORS.length] }} />{c.name}</span>} right={c.persona && <AiTag source={c.persona.source} />}>
+            {c.segment_definition && <div style={{ fontSize: 12, marginBottom: 8, padding: "4px 8px", borderRadius: 4, background: "rgba(255,255,255,.06)" }}>Targeting: {c.segment_definition}</div>}
+            {c.persona && (
+              <>
+                <div style={{ fontSize: 14, marginBottom: 8 }}>{c.persona.one_liner}</div>
+                <div style={{ fontSize: 13, lineHeight: 1.6 }}>
+                  <div><b>Tone:</b> {c.persona.tone}</div>
+                  <div><b>Best hours:</b> {c.persona.best_hours}</div>
+                  <div><b>Do:</b> {c.persona.do.join("; ")}</div>
+                  <div><b>Don't:</b> {c.persona.dont.join("; ")}</div>
+                </div>
+              </>
+            )}
+            <div style={{ marginTop: 10, display: "flex", flexWrap: "wrap", gap: 4 }}>
+              {c.keywords.slice(0, 12).map((k: string) => (
+                <span key={k} style={{ fontSize: 11, padding: "2px 6px", borderRadius: 4, background: "rgba(255,255,255,.08)" }}>{k}</span>
+              ))}
+            </div>
+            <div style={{ display: "flex", alignItems: "flex-end", gap: 1, height: 30, marginTop: 10 }} title="Posting activity by hour (UTC)">
+              {c.hours.map((h: number, i: number) => (
+                <div key={i} style={{ flex: 1, height: `${Math.max(4, (h / Math.max(...c.hours)) * 100)}%`, background: COMMUNITY_COLORS[c.community_id % COMMUNITY_COLORS.length], opacity: 0.7 }} />
+              ))}
+            </div>
+            <div style={{ fontSize: 10, opacity: 0.5, display: "flex", justifyContent: "space-between" }}><span>00h</span><span>12h</span><span>23h UTC</span></div>
+          </Card>
+        ))}
+      </div>
+
+      <Card title="CTR change per ad and community" info="Last 3 days vs the ad's healthy baseline. Red = clicks dropping in that community. Hover a cell for details.">
+        <table style={{ borderCollapse: "collapse" }}>
+          <thead>
+            <tr>
+              <Th>Ad</Th>
+              {comms.map((c) => <th key={c.community_id} style={{ ...th, opacity: sel == null || sel === c.community_id ? 0.8 : 0.3 }}>{c.name}</th>)}
+            </tr>
+          </thead>
+          <tbody>
+            {ads.map((ad) => (
+              <tr key={ad}>
+                <td style={{ ...td, fontWeight: 700 }}><a onClick={() => go("ad", ad)} style={{ color: "inherit", cursor: "pointer" }}>{ad}</a></td>
+                {comms.map((c) => {
+                  const r = hm.data!.find((x) => x.ad_id === ad && x.community_id === c.community_id);
+                  if (!r) return <td key={c.community_id} style={{ ...td, opacity: 0.25, textAlign: "center" }}>·</td>;
+                  const v = r.ctr_change;
+                  const bg = v < -0.3 ? "rgba(227,72,80,.55)" : v < -0.15 ? "rgba(230,134,25,.45)" : v < 0.05 ? "rgba(223,191,0,.18)" : "rgba(45,157,120,.4)";
+                  return (
+                    <td key={c.community_id} title={`${r.status} · CTR ${pct(r.ctr_before, 2)} → ${pct(r.ctr_now, 2)} · freq ${r.frequency.toFixed(1)}`} style={{ ...td, textAlign: "center", background: bg, opacity: sel == null || sel === c.community_id ? 1 : 0.3 }}>
+                      {v > 0 ? "+" : ""}{(v * 100).toFixed(0)}%
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </Card>
+    </Flex>
+  );
+}
