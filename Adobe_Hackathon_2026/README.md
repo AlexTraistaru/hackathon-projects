@@ -52,7 +52,7 @@ You can create your own company in the UI and connect a channel:
 | News context per country | `python run.py fetch-news`: real GDELT headlines per market, shown on hover (data/signals/) |
 | Reporting delay | Per platform: same day for Meta, about 1 day for TikTok, X and LinkedIn |
 
-Bluesky has no native ads (as of mid-2026), so it's used as an audience source, not an ad channel.
+Bluesky has no native ads, so it's used as an audience source, not an ad channel.
 
 
 ## Quick start (Ubuntu or Windows 10/11, 8 GB RAM is enough)
@@ -92,25 +92,6 @@ match it. If you change it, run `python run.py build-world` again.
    `data/signals/`. Commit that folder. Demand numbers stay simulated; headlines are context.
 5. **Check:** `python run.py smoke` runs everything end to end with the LLM in cache-only mode
    and prints peak memory (~0.6 GB for the backend).
-6. **Discord (optional):** set `DISCORD_WEBHOOK_URL`. For approve links to work from a phone, set
-   `PUBLIC_BASE_URL=http://<laptop LAN IP>:8000`, run `python run.py demo --host 0.0.0.0`, and
-   accept the Windows Firewall prompt.
-7. Record a backup video of the demo path.
-
-## Demo path (3 minutes)
-
-| Time | Screen | What to show |
-| --- | --- | --- |
-| 0:00 | Companies | 4 companies, 7 ad channels, total € at risk, failing ads, a health bar per channel |
-| 0:10 | Volt → Instagram → Radar | Campaign maps: expand to Spain (heatwave), retreat from France (price war); hover for the reason |
-| 0:15 | Volt → Instagram → Audiences | "Digital twins of real Bluesky communities": graph, persona cards, heatmap |
-| 0:35 | Radar → A1 → Diagnose | Fatigue 99%, other causes ruled out, evidence with values, narrative streams in |
-| 1:00 | Tallyhawk → LinkedIn → Audiences | Same agent, B2B: segments are job functions, no follower graph (LinkedIn doesn't give one) |
-| 1:15 | Creative Studio | Memory items, 3 one-change variants, resonance, brand guard |
-| 1:40 | Experiments → Budget | Thompson sampling picks a winner in ~4 days; apply it; approve a budget move (Discord) |
-| 2:00 | Company profile → Connect a channel | What each platform's API really gives you; connect a simulated feed live |
-| 2:20 | Sim control | A judge picks "Break something"; evaluation shows 20/20 planted problems diagnosed |
-| 2:45 | LLM switch | Cloud ↔ local, € 0 inference |
 
 ## How it works
 
@@ -158,14 +139,6 @@ data/seed/     companies/*.json, comments.json, (llm_cache.json)
 frontend/      Vite + React 18 + TypeScript + Adobe React Spectrum + Recharts
 run.py         task runner (replaces make)
 ```
-
-## Memory on an 8 GB laptop
-
-The demo runs as one process: FastAPI serves the built frontend, so there is no Node dev server.
-With all 7 channels running, the backend peaks around 0.6 GB. If you also run Ollama, it adds ~1.5-2 GB with `qwen3:1.7b`
-(2k context). Close the IDE before presenting.
-
-## Honest framing for judges
 
 The companies are fictional. Bluesky audiences are real once you run the snapshot. The ad
 platforms are simulated, because no live ad account can be connected in 12 hours. Every
