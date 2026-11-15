@@ -32,6 +32,13 @@ Each folder contains the code and assets for a specific hackathon submission. Th
 - **My Contribution:** Prototype testing, implementation of some functionalities and project documentation. 
 - **Technologies:** Python, Streamlit, FastAPI, React Native, TypeScript, SQLite, scikit-learn.
 
+  ### 5) Adobe Hackathon 2026 — Ad Fatigue Agent
+
+- **Folder:** `Adobe_Hackathon_2026`
+- **Project:** AI-assisted advertising analytics platform that detects ad fatigue, diagnoses campaign performance issues, and proposes creative and budget optimizations. The hackathon demo uses simulated advertising data.
+- **My Contribution:** Co-developed the hackathon project with a teammate, contributing to implementation and integration.
+- **Technologies:** Python, FastAPI, React, TypeScript, Adobe React Spectrum, scikit-learn, LightGBM.
+
 ## Technologies Used (across projects)
 
 Depending on the hackathon project, this repository includes work with:
